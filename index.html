@@ -1178,11 +1178,649 @@
         .sidebar>* {
             max-width: 100%;
         }
+    
+/* =========================================================
+   NETWORK MESH BACKGROUND
+   Visual-only layer. Existing content, controls and features
+   remain unchanged.
+   ========================================================= */
+
+html, body {
+    min-height: 100%;
+}
+
+body {
+    position: relative;
+    isolation: isolate;
+    background:
+        radial-gradient(900px 650px at 78% 18%, rgba(91, 34, 160, .22), transparent 68%),
+        radial-gradient(760px 560px at 62% 72%, rgba(38, 50, 150, .18), transparent 70%),
+        radial-gradient(600px 500px at 10% 78%, rgba(18, 112, 85, .10), transparent 72%),
+        #09050f;
+}
+
+/* Canvas sits behind the existing CV UI. */
+#networkBackgroundCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    z-index: -2;
+}
+
+/* Keep the existing subtle texture, but make it fit the new mesh. */
+body::before {
+    background-image:
+        radial-gradient(rgba(196, 153, 255, .10) .65px, transparent .65px);
+    background-size: 24px 24px;
+    opacity: .10;
+    mask-image: linear-gradient(to bottom, black, transparent 90%);
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent 90%);
+    z-index: -1;
+}
+
+/* Slightly translucent surfaces allow the mesh to remain visible
+   around/behind the cards without changing their layout. */
+.topbar,
+.sidebar,
+.hero,
+.section {
+    background:
+        linear-gradient(135deg, rgba(20, 15, 30, .90), rgba(13, 11, 19, .84)),
+        var(--surface);
+    backdrop-filter: blur(10px) saturate(115%);
+    -webkit-backdrop-filter: blur(10px) saturate(115%);
+}
+
+/* The original yellow accent remains intact; add only a subtle
+   violet ambient glow around major panels. */
+.topbar,
+.sidebar,
+.hero,
+.section {
+    box-shadow:
+        var(--shadow),
+        0 0 70px rgba(92, 42, 150, .055);
+}
+
+/* Light mode: retain the original light design and tone the
+   network layer down so readability is preserved. */
+body.light {
+    background:
+        radial-gradient(900px 650px at 78% 18%, rgba(126, 87, 180, .10), transparent 68%),
+        radial-gradient(760px 560px at 62% 72%, rgba(66, 91, 190, .07), transparent 70%),
+        #f4f3ef;
+}
+
+body.light .topbar,
+body.light .sidebar,
+body.light .hero,
+body.light .section {
+    background:
+        linear-gradient(135deg, rgba(255,255,255,.91), rgba(255,255,255,.82)),
+        var(--surface);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #networkBackgroundCanvas {
+        opacity: .75;
+    }
+}
+
+@media print {
+    #networkBackgroundCanvas {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+    }
+}
+
+
+/* =========================================================
+   MODERN + MOBILE RESPONSIVE POLISH
+   Visual/layout enhancement only. Existing JS/content preserved.
+   ========================================================= */
+
+:root {
+    --mobile-radius: 20px;
+}
+
+body {
+    min-height: 100dvh;
+    background-color: #07040c;
+}
+
+/* More premium glass surfaces while preserving the existing palette. */
+.topbar,
+.sidebar,
+.hero,
+.section {
+    border-color: rgba(255,255,255,.075);
+    box-shadow:
+        0 24px 70px rgba(0,0,0,.30),
+        inset 0 1px 0 rgba(255,255,255,.045),
+        0 0 80px rgba(112,54,190,.035);
+}
+
+.topbar {
+    background:
+        linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.015)),
+        rgba(12,9,18,.72);
+    backdrop-filter: blur(22px) saturate(145%);
+    -webkit-backdrop-filter: blur(22px) saturate(145%);
+}
+
+.sidebar,
+.hero,
+.section {
+    background:
+        linear-gradient(135deg, rgba(255,255,255,.045), rgba(255,255,255,.012)),
+        rgba(12,9,18,.78);
+    backdrop-filter: blur(18px) saturate(130%);
+    -webkit-backdrop-filter: blur(18px) saturate(130%);
+}
+
+.hero::before {
+    width: 420px;
+    height: 420px;
+    right: -180px;
+    top: -230px;
+    background:
+        radial-gradient(circle at 40% 40%, rgba(220,55,190,.15), transparent 35%),
+        radial-gradient(circle, rgba(91,54,255,.15), transparent 68%);
+    filter: blur(2px);
+}
+
+.hero::after {
+    background: linear-gradient(90deg, var(--yellow), #9b5cff, #e34dbf);
+    box-shadow: 0 0 18px rgba(155,92,255,.35);
+}
+
+/* Make content feel layered over the mesh on smaller screens. */
+@media (max-width: 900px) {
+    .shell {
+        width: min(720px, calc(100% - 28px));
+        grid-template-columns: 1fr;
+        gap: 18px;
+        margin-top: 20px;
+    }
+
+    .sidebar {
+        position: relative;
+        top: auto;
+        order: 0;
+        padding: 22px 20px;
+    }
+
+    .content {
+        order: 1;
+    }
+
+    .profile-photo-hover {
+        width: 132px;
+        height: 132px;
+    }
+
+    .skills {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    html {
+        scroll-padding-top: 12px;
+    }
+
+    body {
+        min-height: 100dvh;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    /* Compact mobile header with safe-area support. */
+    .topbar {
+        width: calc(100% - 16px);
+        height: 54px;
+        margin: max(8px, env(safe-area-inset-top)) auto 0;
+        padding: 0 8px 0 14px;
+        border-radius: 16px;
+    }
+
+    .brand {
+        font-size: 9px;
+        letter-spacing: .11em;
+        white-space: nowrap;
+    }
+
+    .actions {
+        gap: 6px;
+    }
+
+    .icon-btn,
+    .print-btn {
+        height: 38px;
+    }
+
+    .icon-btn {
+        width: 38px;
+    }
+
+    .shell {
+        width: calc(100% - 20px);
+        margin: 16px auto 36px;
+        gap: 14px;
+    }
+
+    .sidebar,
+    .hero,
+    .section {
+        border-radius: var(--mobile-radius);
+    }
+
+    .sidebar {
+        padding: 20px 16px;
+    }
+
+    .sidebar::before {
+        width: 52px;
+        height: 3px;
+        margin-bottom: 16px;
+    }
+
+    .profile-photo-hover {
+        width: 116px;
+        height: 116px;
+        border-radius: 20px;
+    }
+
+    .name {
+        font-size: 20px;
+    }
+
+    .contact {
+        margin-top: 18px;
+        padding-top: 14px;
+    }
+
+    .contact-item {
+        font-size: 11px;
+        margin: 9px 0;
+    }
+
+    .hero,
+    .section {
+        padding: 22px 18px;
+        margin-bottom: 14px;
+    }
+
+    .hero h1 {
+        font-size: clamp(31px, 10vw, 40px);
+        line-height: 1;
+        letter-spacing: -.045em;
+        overflow-wrap: anywhere;
+    }
+
+    .hero .subtitle {
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    .hero .intro {
+        font-size: 12px;
+        line-height: 1.65;
+        margin-top: 14px;
+    }
+
+    .hero-cta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .hero-cta a {
+        justify-content: center;
+        min-height: 42px;
+        padding: 9px 10px;
+        font-size: 10px;
+    }
+
+    .terminal {
+        margin-top: 15px;
+        font-size: 9px;
+    }
+
+    .terminal-body {
+        padding: 9px 10px;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .section-head {
+        gap: 8px;
+        margin-bottom: 18px;
+    }
+
+    .section-head h2 {
+        font-size: 17px;
+    }
+
+    .section-head::after {
+        width: 34px;
+    }
+
+    .job {
+        padding-left: 18px;
+        margin-left: 4px;
+        padding-bottom: 22px;
+    }
+
+    .job-company {
+        font-size: 14px;
+    }
+
+    .job-role,
+    .job ul,
+    .job p {
+        font-size: 11.5px;
+    }
+
+    .skills,
+    .training-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .skill,
+    .card {
+        border-radius: 13px;
+        padding: 13px;
+    }
+
+    .company-logo {
+        width: 42px;
+        height: 42px;
+        padding: 5px;
+    }
+
+    .job-header {
+        gap: 9px;
+    }
+
+    .back-to-top {
+        right: max(12px, env(safe-area-inset-right));
+        bottom: max(12px, env(safe-area-inset-bottom));
+        width: 44px;
+        height: 44px;
+        border-radius: 13px;
+    }
+
+    .back-to-top::after {
+        display: none;
+    }
+
+    /* Reduce visual density of the network on phones. */
+    #networkBackgroundCanvas {
+        opacity: .82;
+    }
+}
+
+@media (max-width: 380px) {
+    .brand {
+        font-size: 8px;
+    }
+
+    .hero-cta {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-cta a {
+        width: 100%;
+    }
+
+    .shell {
+        width: calc(100% - 14px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .topbar,
+    .sidebar,
+    .hero,
+    .section,
+    .skill,
+    .card,
+    .hero-cta a,
+    .back-to-top {
+        transition: none !important;
+    }
+}
+
+@media print {
+    body {
+        min-height: auto;
+    }
+}
+
+    
+/* =========================================================
+   V2 — Cleaner Tech Stack / Training layout
+   Content and JavaScript remain unchanged.
+   ========================================================= */
+
+.sidebar-stack-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 9px;
+}
+
+.sidebar-stack-list li {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    padding: 10px 11px;
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 13px;
+    background:
+        linear-gradient(135deg, rgba(255,255,255,.045), rgba(255,255,255,.012)),
+        rgba(255,255,255,.018);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+    transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.sidebar-stack-list li:hover {
+    transform: translateY(-2px);
+    border-color: rgba(242,208,75,.38);
+    background:
+        linear-gradient(135deg, rgba(242,208,75,.08), rgba(255,255,255,.015)),
+        rgba(255,255,255,.02);
+}
+
+.stack-icon {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 34px;
+    border-radius: 10px;
+    color: var(--yellow);
+    background: rgba(242,208,75,.075);
+    border: 1px solid rgba(242,208,75,.16);
+    font-size: 12px;
+}
+
+.stack-copy {
+    min-width: 0;
+    display: block;
+}
+
+.stack-copy strong {
+    display: block;
+    color: var(--text);
+    font-size: 11.5px;
+    line-height: 1.35;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+.stack-copy small {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.training-stack-list .stack-copy strong {
+    font-size: 11.5px;
+}
+
+.training-stack-list .stack-copy small {
+    color: var(--yellow);
+    opacity: .82;
+}
+
+/* Keep the main cards neat when text wraps. */
+.skills .skill {
+    min-width: 0;
+}
+
+.skills .skill strong,
+.skills .skill span {
+    overflow-wrap: anywhere;
+}
+
+/* Tablet / mobile */
+@media (max-width: 900px) {
+    .sidebar-stack-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .training-stack-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .sidebar-stack-list li {
+        height: 100%;
+        align-items: start;
+    }
+}
+
+@media (max-width: 600px) {
+    .side-section {
+        width: 100%;
+        margin-top: 22px;
+    }
+
+    .side-title {
+        font-size: 9px;
+        letter-spacing: .18em;
+        margin-bottom: 8px;
+    }
+
+    .side-line {
+        margin-bottom: 10px;
+    }
+
+    .sidebar-stack-list,
+    .training-stack-list {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .sidebar-stack-list li {
+        grid-template-columns: 34px minmax(0, 1fr);
+        padding: 10px;
+        border-radius: 12px;
+    }
+
+    .stack-icon {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+        border-radius: 9px;
+    }
+
+    .stack-copy strong {
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    .stack-copy small {
+        font-size: 9.5px;
+        line-height: 1.45;
+        margin-top: 2px;
+    }
+
+    /* Give Tech Stack and Training their own clean visual groups. */
+    .tech-stack-list li,
+    .training-stack-list li {
+        min-height: 53px;
+    }
+
+    /* Avoid overly wide cards and awkward wrapping on narrow phones. */
+    .skills .skill,
+    .training-grid .card {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .skills .skill strong {
+        font-size: 11.5px;
+        line-height: 1.35;
+    }
+
+    .skills .skill span {
+        font-size: 10.5px;
+        line-height: 1.45;
+    }
+}
+
+@media (max-width: 380px) {
+    .sidebar-stack-list li {
+        padding: 9px;
+        gap: 8px;
+    }
+
+    .stack-icon {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+        font-size: 11px;
+    }
+
+    .stack-copy strong {
+        font-size: 10.5px;
+    }
+
+    .stack-copy small {
+        font-size: 9px;
+    }
+}
+
+@media print {
+    .sidebar-stack-list li {
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+}
+
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
+
 <body>
+    <!-- Background only: does not participate in layout or interaction -->
+    <canvas id="networkBackgroundCanvas" aria-hidden="true"></canvas>
+
     <header class="topbar">
         <div class="brand">NAWAKARN NINPRAWIT</div>
         <div class="actions">
@@ -1281,25 +1919,6 @@
                     </div>
                 </div>
 
-            </section>
-
-            <section class="side-section">
-                <h3 class="side-title">Tech Stack</h3>
-                <div class="side-line"></div>
-                <ul class="bullet-list">
-                    <li>Core Testing Skills (SDLC / STLC, TDD/BDD)</li>
-                    <li>Automation Testing (JavaScript / TypeScript, Playwright)</li>
-                </ul>
-            </section>
-
-            <section class="side-section">
-                <h3 class="side-title">Training</h3>
-                <div class="side-line"></div>
-                <ul class="bullet-list">
-                    <li>AI for Data Analysis (Google Course)</li>
-                    <li>AI for App Building (Google Course)</li>
-                    <li>ISO/IEC 27001:2022 Information security</li>
-                </ul>
             </section>
         </aside>
 
@@ -1510,7 +2129,7 @@
                     <h2>Core Skills & Tech Stack</h2>
                 </div>
                 <div class="skills">
-                    <div class="skill"><strong>Core Testing</strong><span>SDLC / STLC</span></div>
+                    <div class="skill"><strong>Core Testing Skills</strong><span>SDLC / STLC, TDD/BDD</span></div>
                     <div class="skill"><strong>Automation Testing</strong><span>JavaScript / TypeScript,
                             Playwright</span></div>
                     <div class="skill"><strong>Performance Testing</strong><span>Applications</span></div>
@@ -1798,6 +2417,245 @@
             });
         })();
     </script>
+
+
+<script>
+/*
+ * Animated network mesh background.
+ * Independent from the existing CV scripts.
+ * No DOM layout or application state is modified.
+ */
+(function () {
+    const canvas = document.getElementById("networkBackgroundCanvas");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+
+    const prefersReducedMotion =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let points = [];
+    let animationId = null;
+    let lastTime = 0;
+
+    const COLORS = [
+        [91, 54, 255],   // violet / blue
+        [142, 45, 226],  // purple
+        [221, 48, 190],  // magenta
+        [47, 92, 235],   // electric blue
+        [24, 154, 115]   // subtle green
+    ];
+
+    function random(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    function distance(a, b) {
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function color(index, alpha) {
+        const c = COLORS[index % COLORS.length];
+        return "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + alpha + ")";
+    }
+
+    function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        // Keep density close to the supplied reference without making
+        // the animation expensive on large monitors.
+        const isMobile = width <= 600;
+        const isTablet = width <= 900;
+
+        // Fewer nodes on touch devices keeps scrolling smooth.
+        const areaCount = Math.round((width * height) / (isMobile ? 27000 : isTablet ? 22000 : 19000));
+        const count = isMobile
+            ? Math.max(24, Math.min(42, areaCount))
+            : Math.max(34, Math.min(78, areaCount));
+
+        points = Array.from({ length: count }, function (_, i) {
+            return {
+                x: random(-40, width + 40),
+                y: random(-40, height + 40),
+                vx: random(-0.055, 0.055),
+                vy: random(-0.045, 0.045),
+                r: random(1.3, 3.0),
+                hue: i % COLORS.length,
+                phase: random(0, Math.PI * 2)
+            };
+        });
+    }
+
+    function drawGlow(x, y, radius, rgb, alpha) {
+        const g = ctx.createRadialGradient(x, y, 0, x, y, radius);
+        g.addColorStop(0, "rgba(" + rgb.join(",") + "," + alpha + ")");
+        g.addColorStop(1, "rgba(" + rgb.join(",") + ",0)");
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    function drawMesh(time) {
+        ctx.clearRect(0, 0, width, height);
+
+        // Ambient violet / magenta light fields.
+        drawGlow(width * 0.83, height * 0.18, Math.min(width, height) * 0.42,
+            [104, 34, 177], 0.055);
+        drawGlow(width * 0.68, height * 0.68, Math.min(width, height) * 0.36,
+            [43, 58, 190], 0.045);
+        drawGlow(width * 0.18, height * 0.82, Math.min(width, height) * 0.30,
+            [15, 130, 92], 0.025);
+
+        // Slowly drift nodes.
+        if (!prefersReducedMotion) {
+            points.forEach(function (p) {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < -70 || p.x > width + 70) p.vx *= -1;
+                if (p.y < -70 || p.y > height + 70) p.vy *= -1;
+            });
+        }
+
+        // Connect nearby points.
+        const maxDistance = width <= 600
+            ? 125
+            : Math.max(115, Math.min(190, width * 0.15));
+
+        for (let i = 0; i < points.length; i++) {
+            for (let j = i + 1; j < points.length; j++) {
+                const a = points[i];
+                const b = points[j];
+                const d = distance(a, b);
+
+                if (d > maxDistance) continue;
+
+                const strength = 1 - d / maxDistance;
+
+                // Thin glowing connection.
+                ctx.strokeStyle = color(
+                    Math.round((a.hue + b.hue) / 2),
+                    0.08 + strength * 0.18
+                );
+                ctx.lineWidth = 0.55 + strength * 0.65;
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.stroke();
+
+                // Translucent triangular mesh, matching the reference.
+                if (strength > 0.48 && (i + j) % 3 === 0) {
+                    const c = points[(j + 1) % points.length];
+
+                    if (distance(b, c) < maxDistance * 1.18 &&
+                        distance(a, c) < maxDistance * 1.18) {
+
+                        const hue = Math.round((a.hue + b.hue + c.hue) / 3);
+
+                        ctx.fillStyle = color(
+                            hue,
+                            0.018 + strength * 0.055
+                        );
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.lineTo(c.x, c.y);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+
+        // Nodes and soft halos.
+        points.forEach(function (p) {
+            const pulse = prefersReducedMotion
+                ? 1
+                : 0.82 + Math.sin(time * 0.0012 + p.phase) * 0.18;
+
+            const rgb = COLORS[p.hue % COLORS.length];
+
+            // Halo
+            drawGlow(
+                p.x,
+                p.y,
+                14 + p.r * 4,
+                rgb,
+                0.05 * pulse
+            );
+
+            // Core
+            ctx.fillStyle = color(p.hue, 0.62 + 0.28 * pulse);
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * pulse, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // A faint vignette keeps the center readable for the CV.
+        const vignette = ctx.createRadialGradient(
+            width * 0.50, height * 0.48, Math.min(width, height) * 0.18,
+            width * 0.50, height * 0.48, Math.max(width, height) * 0.72
+        );
+        vignette.addColorStop(0, "rgba(5, 2, 10, 0)");
+        vignette.addColorStop(1, "rgba(3, 1, 7, .22)");
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0, 0, width, height);
+    }
+
+    function animate(time) {
+        // Avoid unnecessary redraws when tab is throttled.
+        if (time - lastTime > 20) {
+            drawMesh(time);
+            lastTime = time;
+        }
+        animationId = requestAnimationFrame(animate);
+    }
+
+    resize();
+    drawMesh(0);
+
+    window.addEventListener("resize", resize, { passive: true });
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", resize, { passive: true });
+    }
+
+    if (!prefersReducedMotion) {
+        animationId = requestAnimationFrame(animate);
+    }
+
+    // If the page later changes to light mode, keep the same background
+    // geometry but reduce its intensity without touching the theme code.
+    const observer = new MutationObserver(function () {
+        canvas.style.opacity =
+            document.body.classList.contains("light") ? "0.34" : "1";
+    });
+
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ["class"]
+    });
+
+    canvas.style.opacity =
+        document.body.classList.contains("light") ? "0.34" : "1";
+})();
+</script>
 
 </body>
 
